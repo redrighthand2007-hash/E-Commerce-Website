@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Insurance Corner</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container minimal">
+            <a href="homepage.html" class="logo">Insurance Corner</a>
+        </div>
+    </nav>
+
+    <div class="container registration-container">
+        <div class="card registration-card">
+            <h2 class="form-title">Client Registration</h2>
+            <p class="text-center" style="margin-bottom: 20px; color: var(--text-muted);">Please enter your details to create your secure account.</p>
+            
+            <form id="signupForm" class="registration-form" novalidate>
+                
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="fullName" class="form-label">Full Name (As per PAN):</label>
+                        <input type="text" id="fullName" class="form-input" placeholder="e.g., John Doe" required>
+                        <span class="error-message" id="nameError">Please enter a valid name (letters only).</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phoneNum" class="form-label">Mobile Number:</label>
+                        <input type="tel" id="phoneNum" class="form-input" placeholder="10-digit mobile number" required>
+                        <span class="error-message" id="phoneError">Please enter a valid 10-digit mobile number.</span>
+                    </div>
+                </div>
+
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="emailId" class="form-label">Email Address:</label>
+                        <input type="email" id="emailId" class="form-input" placeholder="e.g., name@example.com" required>
+                        <span class="error-message" id="emailError">Please enter a valid email address.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="panNum" class="form-label">PAN Number:</label>
+                        <input type="text" id="panNum" class="form-input uppercase-input" placeholder="e.g., ABCDE1234F" maxlength="10" required>
+                        <span class="error-message" id="panError">Invalid PAN format (Expected: 5 Letters, 4 Digits, 1 Letter).</span>
+                    </div>
+                </div>
+
+                <div id="successMessage" class="success-message" style="display: none;">
+                    Registration successful! Redirecting...
+                </div>
+
+                <button type="submit" class="action-btn btn-primary-action btn-full-margin">Verify & Create Account</button>
+                
+                <div class="bottom-actions quotes-bottom-actions" style="justify-content: center; margin-top: 15px;">
+                    <button type="button" class="action-btn btn-grey btn-small" onclick="window.location.href='homepage.html'">Cancel & Go Home</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Insurance Corner Company Limited.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const signupForm = document.getElementById('signupForm');
+            
+            // Regex Patterns
+            // Name: Only letters and spaces, 3 to 50 characters
+            const nameRegex = /^[a-zA-Z\s]{3,50}$/; 
+            // Phone: Indian mobile numbers starting with 6,7,8, or 9 and exactly 10 digits
+            const phoneRegex = /^[6-9]\d{9}$/; 
+            // Email: Standard email validation format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+            // PAN: 5 uppercase letters, 4 digits, 1 uppercase letter
+            const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+
+            // Helper function to show/hide errors
+            function validateField(inputElement, errorElement, regex, isPan = false) {
+                let value = inputElement.value.trim();
+                
+                // Force PAN to uppercase before validating
+                if (isPan) {
+                    value = value.toUpperCase();
+                    inputElement.value = value; 
+                }
+
+                if (regex.test(value)) {
+                    errorElement.style.display = 'none';
+                    inputElement.style.borderColor = '#27ae60'; // Green border for success
+                    return true;
+                } else {
+                    errorElement.style.display = 'block';
+                    inputElement.style.borderColor = '#d9534f'; // Red border for error
+                    return false;
+                }
+            }
+
+            signupForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Stop form from submitting normally
+
+                // Get DOM elements
+                const nameInput = document.getElementById('fullName');
+                const phoneInput = document.getElementById('phoneNum');
+                const emailInput = document.getElementById('emailId');
+                const panInput = document.getElementById('panNum');
+
+                // Validate all fields
+                const isNameValid = validateField(nameInput, document.getElementById('nameError'), nameRegex);
+                const isPhoneValid = validateField(phoneInput, document.getElementById('phoneError'), phoneRegex);
+                const isEmailValid = validateField(emailInput, document.getElementById('emailError'), emailRegex);
+                const isPanValid = validateField(panInput, document.getElementById('panError'), panRegex, true);
+
+                // If all validations pass
+                if (isNameValid && isPhoneValid && isEmailValid && isPanValid) {
+                    const successMsg = document.getElementById('successMessage');
+                    successMsg.style.display = 'block';
+                    
+                    // Simulate a successful registration redirect after 2 seconds
+                    setTimeout(() => {
+                        alert("Account verified and created successfully!");
+                        window.location.href = 'homepage.html'; // Change to dashboard if you have one
+                    }, 2000);
+                }
+            });
+
+            // Optional: Real-time validation as the user types (improves UX)
+            document.getElementById('panNum').addEventListener('input', (e) => {
+                e.target.value = e.target.value.toUpperCase(); // Force uppercase typing for PAN
+            });
+        });
+    </script>
+</body>
+</html>

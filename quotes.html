@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotations helper | Insurance Corner</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container minimal">
+            <a href="homepage.html" class="logo">Insurance Corner</a>
+        </div>
+    </nav>
+
+    <div class="container quotes-container">
+        
+        <div class="card quotes-card">
+            <h2 class="quotes-title">Find Your Perfect Policy</h2>
+            
+            <form id="quoteForm">
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="clientAge" class="form-label">Your Age:</label>
+                        <input type="number" id="clientAge" class="form-input" required min="18" max="100" placeholder="e.g., 25">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="policyType" class="form-label">Insurance Type:</label>
+                        <select id="policyType" class="form-input" required>
+                            <option value="health">Health Insurance</option>
+                            <option value="auto">Auto Insurance</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="coverageAmount" class="form-label">Coverage (₹):</label>
+                        <input type="number" id="coverageAmount" class="form-input" required min="50000" step="10000" placeholder="e.g., 500000">
+                    </div>
+                </div>
+
+                <button type="submit" class="action-btn btn-primary-action btn-full-margin">Calculate Targeted Quotes</button>
+            </form>
+        </div>
+
+        <div id="resultsSection" class="results-section">
+            <h3 class="results-title">Recommended For You</h3>
+            
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Plan Name</th>
+                        <th>Target Age</th>
+                        <th>Total Coverage</th>
+                        <th>Annual Premium</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="policyListBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="bottom-actions quotes-bottom-actions">
+            <button type="button" class="action-btn btn-grey" onclick="history.back()">Go Back</button>
+            <button type="button" class="action-btn btn-grey" onclick="window.location.href='homepage.html'">Go Home</button>
+            <button type="button" class="action-btn btn-primary-action" onclick="window.location.href='registrationform.html'">Proceed Next</button>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Insurance Corner Company Limited.</p>
+    </footer>
+
+    <script>
+        const database = [
+            { id: 1, name: "Youth Starter Health", type: "health", minAge: 18, maxAge: 30, rate: 0.012 },
+            { id: 2, name: "Family Comprehensive", type: "health", minAge: 25, maxAge: 55, rate: 0.018 },
+            { id: 3, name: "Senior Care Plus", type: "health", minAge: 50, maxAge: 100, rate: 0.035 },
+            { id: 4, name: "Student Auto Basic", type: "auto", minAge: 18, maxAge: 25, rate: 0.025 },
+            { id: 5, name: "Safe Driver Commuter", type: "auto", minAge: 26, maxAge: 100, rate: 0.015 }
+        ];
+
+        const form = document.getElementById('quoteForm');
+        const resultsSection = document.getElementById('resultsSection');
+        const policyListBody = document.getElementById('policyListBody');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const age = parseInt(document.getElementById('clientAge').value);
+            const type = document.getElementById('policyType').value;
+            const coverage = parseInt(document.getElementById('coverageAmount').value);
+
+            const targetedPolicies = database.filter(policy => policy.type === type && age >= policy.minAge && age <= policy.maxAge);
+
+            policyListBody.innerHTML = '';
+            
+            if (targetedPolicies.length === 0) {
+                policyListBody.innerHTML = '<tr><td colspan="5" class="empty-state-cell">No targeted policies available for this age and type. Please try adjusting your details.</td></tr>';
+            } else {
+                targetedPolicies.forEach(policy => {
+                    const premium = Math.round(coverage * policy.rate);
+                    
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${policy.name}</strong></td>
+                        <td>${age} yrs</td>
+                        <td>₹${coverage.toLocaleString()}</td>
+                        <td class="premium-amount">₹${premium.toLocaleString()} / yr</td>
+                        <td class="text-center">
+                            <button type="button" class="action-btn btn-primary-action btn-small" onclick="alert('Proceeding to buy ${policy.name}')">Select Plan</button>
+                        </td>
+                    `;
+                    policyListBody.appendChild(tr);
+                });
+            }
+
+            // Trigger the CSS fade-in animation
+            resultsSection.classList.add('show-results');
+        });
+    </script>
+</body>
+</html>

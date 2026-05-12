@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator | Insurance Corner</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container minimal">
+            <a href="homepage.html" class="logo">Insurance Corner</a>
+        </div>
+    </nav>
+
+    <div class="container quotes-container">
+        
+        <div class="card quotes-card">
+            <h2 class="quotes-title">Check Your BMI</h2>
+            
+            <form id="bmiForm">
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="clientWeight" class="form-label">Weight (kg):</label>
+                        <input type="number" id="clientWeight" class="form-input" required min="20" max="300" step="0.1" placeholder="e.g., 70">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="clientHeight" class="form-label">Height (cm):</label>
+                        <input type="number" id="clientHeight" class="form-input" required min="50" max="250" placeholder="e.g., 175">
+                    </div>
+                </div>
+
+                <button type="submit" class="action-btn btn-primary-action btn-full-margin">Calculate BMI</button>
+            </form>
+        </div>
+
+        <div id="resultsSection" class="results-section" style="display: none;">
+            <h3 class="results-title">Your Health Status</h3>
+            
+            <div class="bmi-result-display">
+                <h1 id="bmiValueDisplay" class="bmi-score">--</h1>
+                <h3 id="bmiCategoryDisplay" class="bmi-category">--</h3>
+                <p id="bmiAdviceDisplay" class="bmi-advice">--</p>
+            </div>
+        </div>
+
+        <div class="bottom-actions quotes-bottom-actions">
+            <button type="button" class="action-btn btn-grey" onclick="history.back()">Go Back</button>
+            <button type="button" class="action-btn btn-grey" onclick="window.location.href='homepage.html'">Go Home</button>
+            <button type="button" class="action-btn btn-primary-action" onclick="window.location.href='quotes.html'">Find Quotations</button>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Insurance Corner Company Limited.</p>
+    </footer>
+
+    <script> 
+        document.addEventListener('DOMContentLoaded', () => {
+            const bmiForm = document.getElementById('bmiForm');
+            const resultsSection = document.getElementById('resultsSection');
+            const bmiValueDisplay = document.getElementById('bmiValueDisplay');
+            const bmiCategoryDisplay = document.getElementById('bmiCategoryDisplay');
+            const bmiAdviceDisplay = document.getElementById('bmiAdviceDisplay');
+        
+            bmiForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+            
+                // Fetch user inputs
+                const weight = parseFloat(document.getElementById('clientWeight').value);
+                const heightCm = parseFloat(document.getElementById('clientHeight').value);
+
+                // Convert height to meters
+                const heightM = heightCm / 100;
+
+                // Calculate BMI: weight (kg) / height^2 (m^2)
+                const bmi = (weight / (heightM * heightM)).toFixed(1);
+            
+                // Determine category, advice, and color
+                let category = '';
+                let advice = '';
+                let colorCode = '';
+            
+                if (bmi < 18.5) {
+                    category = 'Underweight';
+                    advice = 'You are below a healthy weight range. Consider consulting a nutritionist.';
+                    colorCode = '#f39c12'; // Orange
+                } else if (bmi >= 18.5 && bmi <= 24.9) {
+                    category = 'Normal weight';
+                    advice = 'Great job! You are in a healthy weight range. Perfect for standard premium rates.';
+                    colorCode = '#27ae60'; // Green
+                } else if (bmi >= 25 && bmi <= 29.9) {
+                    category = 'Overweight';
+                    advice = 'You are slightly above the healthy weight range. Regular exercise is recommended.';
+                    colorCode = '#e67e22'; // Dark Orange
+                } else {
+                    category = 'Obese';
+                    advice = 'You are in the obese category, which may affect health insurance premiums. Please consult a doctor.';
+                    colorCode = '#c0392b'; // Red
+                }
+            
+                // Update the DOM
+                bmiValueDisplay.textContent = bmi;
+                bmiValueDisplay.style.color = colorCode;
+
+                bmiCategoryDisplay.textContent = category;
+                bmiCategoryDisplay.style.color = colorCode;
+
+                bmiAdviceDisplay.textContent = advice;
+            
+                // Show the results section with animation
+                resultsSection.style.display = 'block';
+
+                // Slight delay to allow display:block to apply before adding opacity class
+                setTimeout(() => {
+                    resultsSection.classList.add('show-results');
+                }, 10);
+            });
+        });
+    </script>
+</body>
+</html>
